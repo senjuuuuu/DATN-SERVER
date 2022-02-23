@@ -3,7 +3,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const passport = require('passport');
 const User = require('../model/User.model');
-const { randomPassword } = require('../config/bcrypt');
+const hash = require('../config/hash');
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
@@ -29,7 +29,7 @@ passport.use(
         displayName: profile.displayName,
         email: profile.emails[0].value,
         avatar: profile.photos[0].value,
-        password: randomPassword(20, profile.name.givenName),
+        password: hash.randomPassword(),
         isActive: true,
       };
       try {
@@ -65,7 +65,7 @@ passport.use(
       //   displayName: profile.name,
       //   email: profile.emails[0].value,
       //   avatar: profile.photos[0].value,
-      //   password: randomPassword(20, profile.name.givenName),
+      //   password: hash.randomPassword(),
       //   isActive: true,
       // };
       done(null, profile);
@@ -88,6 +88,7 @@ passport.use(
   )
 );
 
+//
 passport.serializeUser((user, done) => {
   console.log('1', user.id);
   done(null, user.id);

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const passport = require('passport');
-const authController = require('../controller/auth.controller');
-const { verify } = require('../middleware/authMiddleware');
+const authCtrl = require('../controller/auth.controller');
+const authMid = require('../middleware/authMiddleware');
 /** */
 const CLIENT_URL = 'http://localhost:3000';
 //
@@ -9,8 +9,8 @@ router.get('/login/failed', (req, res) => {
   res.status(401).json({ success: false, message: req.message });
   // res.status(401).json({ success: false, message: 'Failure' });
 });
-router.get('/login/success', authController.SOCIAL);
-router.get('/logout', authController.LOGOUT_GET);
+router.get('/login/success', authCtrl.SOCIAL);
+router.get('/logout', authCtrl.LOGOUT_GET);
 
 /**GOOGLE */
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -43,11 +43,11 @@ router.get(
 );
 
 /** */
-router.post('/login', authController.LOGIN_POST);
-router.post('/signup', authController.SIGNUP_POST);
-router.get('/activate/:hash', authController.ACTIVATE_USER);
-router.post('/refreshToken', authController.REFRESH_TOKEN_POST);
-router.get('/test', (req, res) => {
-  res.redirect('http://localhost:3000/auth/login');
-});
+router.post('/login', authCtrl.LOGIN_POST);
+router.post('/signup', authCtrl.SIGNUP_POST);
+router.get('/activate/:hash', authCtrl.ACTIVATE_USER);
+router.post('/refreshToken', authCtrl.REFRESH_TOKEN_POST);
+/** */
+router.post('/changePassword', authMid.verify, authCtrl.CHANGE_PASSWORD_POST);
+router.post('/forgetPassword', authCtrl.FORGET_PASSWORD_POST);
 module.exports = router;
