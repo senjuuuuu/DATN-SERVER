@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema(
     isActive: { type: Boolean, default: false },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     follower: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    blocking: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     blocked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   { timestamps: true }

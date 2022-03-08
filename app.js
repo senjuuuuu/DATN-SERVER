@@ -9,6 +9,7 @@ const passport = require('passport');
 const cors = require('cors');
 const passportSetup = require('./api/config/passport');
 const authRouter = require('./api/routes/auth.router');
+const userRouter = require('./api/routes/user.router');
 const app = express();
 
 app.use(morgan('dev')); // show status
@@ -33,6 +34,7 @@ app.use(cors(corsOptions));
 
 //routes
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 // Handle error
 app.use((req, res, next) => {

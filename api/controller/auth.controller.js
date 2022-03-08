@@ -32,6 +32,7 @@ const handleErrors = (err) => {
 let refreshTokens = [];
 /** */
 const authCtrl = {
+  //Refresh
   REFRESH_TOKEN_POST: async (req, res) => {
     const refreshToken = req.body.token;
     if (!refreshToken) {
@@ -52,6 +53,7 @@ const authCtrl = {
       });
     });
   },
+  //Login
   LOGIN_POST: async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -70,13 +72,18 @@ const authCtrl = {
       res.status(400).json({ error });
     }
   },
+  //Signup
   SIGNUP_POST: async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
+    let displayName = '';
     if (password !== confirmPassword) {
       return res.status(400).json({ success: 'false', message: 'Confirm password not correct!' });
     }
+    if (!name || name === '') {
+      displayName = '@' + email.split('@')[0];
+    }
     try {
-      const newUser = await User.create({ name, email, password });
+      const newUser = await User.create({ displayName, email, password });
       await mailerSend.sendConfirmationEmail(newUser);
       res.status(200).json({ message: 'Please check email and confirm!' });
     } catch (err) {
@@ -84,6 +91,7 @@ const authCtrl = {
       res.status(400).json({ error });
     }
   },
+  //Logout
   LOGOUT_GET: async (req, res) => {
     const refreshToken = req.body.token;
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
@@ -91,6 +99,7 @@ const authCtrl = {
     req.logOut();
     res.status(200).json({ message: 'You logged out successfully.' });
   },
+  //Active email
   ACTIVATE_USER: async (req, res, next) => {
     const { hash } = req.params;
     // console.log(hash);
@@ -105,7 +114,7 @@ const authCtrl = {
       res.status(402).json({ message: 'User cannot be activated!' });
     }
   },
-  //social
+  //Social
   SOCIAL: (req, res) => {
     if (req.user) {
       const id = req.user;
@@ -115,7 +124,7 @@ const authCtrl = {
       res.status(200).json({ id: id, accessToken, refreshToken });
     }
   },
-  //Change password
+  //Forget password
   FORGET_PASSWORD_POST: async (req, res) => {
     const { email } = req.body;
     if (!email || email === '') {
