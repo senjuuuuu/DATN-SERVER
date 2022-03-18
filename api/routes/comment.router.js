@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const commentCtrl = require('../controller/comment.controller');
+const authMid = require('../middleware/authMiddleware');
+router.post('/create', authMid.verify, commentCtrl.CREATE_COMMENT_POST);
+router.get('/:pinId', authMid.verify, commentCtrl.GET_COMMENT_BY_PIN_GET);
+router.put('/edit', authMid.verify, commentCtrl.UPDATE_COMMENT_PUT);
+router.delete('/delete/:commentId', authMid.verify, commentCtrl.DELETE_COMMENT_DELETE);
+router.put('/like/:comMentId', authMid.verify, commentCtrl.LIKE_COMMENT_PUT);
+router.put('/unLike/:comMentId', authMid.verify, commentCtrl.UN_LIKE_COMMENT_PUT);
+module.exports = router;

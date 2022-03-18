@@ -10,6 +10,11 @@ const cors = require('cors');
 const passportSetup = require('./api/config/passport');
 const authRouter = require('./api/routes/auth.router');
 const userRouter = require('./api/routes/user.router');
+const pinRouter = require('./api/routes/pin.router');
+const tableRouter = require('./api/routes/table.router');
+const conversationRouter = require('./api/routes/conversation.router');
+const commentRouter = require('./api/routes/comment.router');
+const subCommentRouter = require('./api/routes/subComment.router');
 const app = express();
 
 app.use(morgan('dev')); // show status
@@ -35,6 +40,11 @@ app.use(cors(corsOptions));
 //routes
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
+app.use('/api/pin', pinRouter);
+app.use('/api/table', tableRouter);
+app.use('/api/conversation', conversationRouter);
+app.use('/api/comment', commentRouter);
+app.use('/api/subComment', subCommentRouter);
 
 // Handle error
 app.use((req, res, next) => {

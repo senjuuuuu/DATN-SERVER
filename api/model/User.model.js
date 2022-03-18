@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const userSchema = new mongoose.Schema(
   {
     firstName: { type: String },
@@ -31,6 +32,7 @@ const userSchema = new mongoose.Schema(
       },
     },
     avatar: { type: String },
+    cloudinary_id: { type: String },
     social_id: { type: String },
     isActive: { type: Boolean, default: false },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -62,6 +64,8 @@ userSchema.pre('save', async function (next) {
     next(error);
   }
 });
+//
+userSchema.plugin(mongoosePaginate);
 //
 const User = mongoose.model('User', userSchema);
 module.exports = User;

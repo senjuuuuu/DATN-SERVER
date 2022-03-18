@@ -16,5 +16,8 @@ const authMid = {
       res.status(401).json('You are not Authenticated!');
     }
   },
+  checkUser: async (req, res, next) => {
+    if (!user) return res.status(401).json('You are not Authenticated!');
+  },
 };
 module.exports = authMid;
