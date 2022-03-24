@@ -1,6 +1,6 @@
 const Table = require('../model/Table.model');
 const Pin = require('../model/Pin.model');
-
+const moment = require('moment');
 const tableCtrl = {
   CREATE_TABLE_POST: async (req, res) => {
     const { title } = req.body;
@@ -97,8 +97,7 @@ const tableCtrl = {
     }
   },
   GET_ALL_TABLE_BY_USER_GET: async (req, res) => {
-    const { name, limit, page } = req.query;
-    const { user } = req.params;
+    const { name, limit, page, user } = req.query;
     const userId = req.user.id;
     const query = { createBy: user };
     if (name) query.title = { $regex: new RegExp(name), $options: 'i' };
@@ -106,14 +105,43 @@ const tableCtrl = {
     const options = {
       limit: parseInt(limit) || 10,
       page: parseInt(page) || 1,
-      populate: { path: 'pins', select: '_id file updatedAt' },
+      populate: [
+        { path: 'pins', select: '_id file updatedAt' },
+        { path: 'createBy', select: '_id displayName avatar email follower following' },
+      ],
     };
     try {
       const tables = await Table.paginate(query, options);
-      res.status(200).json(tables);
+      console.log(moment(tables.docs.updatedAt).fromNow());
+      const results = {};
+      results.data = tables.docs;
+      results.pagination = {
+        limit: tables.limit,
+        page: tables.page,
+        total: tables.totalDocs,
+      };
+      res.status(200).json(results);
     } catch (error) {
       console.log(error.message);
       res.status(400).json({ message: error.message });
+    }
+  },
+  FIND_TABLE_BY_ID_GET: async (req, res) => {
+    const tableId = req.params.tableId;
+    console.log(tableId);
+    try {
+      const table = await Table.findOne({ _id: tableId })
+        .populate({
+          path: 'createBy',
+          select: '_id displayName avatar email following follower',
+        })
+        .populate({
+          path: 'pins',
+          populate: { path: 'createBy' },
+        });
+      res.status(200).json(table);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 };

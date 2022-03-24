@@ -11,5 +11,6 @@ router.get('/hidden', authMid.verify, pinCtrl.HIDDEN_PIN_POST);
 router.get('/home', authMid.verify, pinCtrl.HOME_OR_SEARCH_PIN_POST);
 router.get('/following', authMid.verify, pinCtrl.FOLLOWING_OR_SEARCH_PIN_POST);
 router.get('/:pinId', authMid.verify, pinCtrl.GET_DETAILS_PIN_GET);
+router.get('/', authMid.verify, pinCtrl.GET_PIN_BY_USER_GET);
 
 module.exports = router;

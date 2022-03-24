@@ -23,7 +23,7 @@ const pinCtrl = {
         privacy: table.privacy,
       };
       const pin = await Pin.create(data);
-      table.pins.push(pin_id);
+      table.pins.push(pin._id);
       await table.save();
       res.status(201).json(pin);
     } catch (error) {
@@ -86,9 +86,17 @@ const pinCtrl = {
       },
       select: '_id title description link file classify',
     };
+
     try {
       const pins = await Pin.paginate(query, options);
-      res.status(200).json(pins);
+      const results = {};
+      results.data = pins.docs;
+      results.pagination = {
+        limit: pins.limit,
+        page: pins.page,
+        total: pins.totalDocs,
+      };
+      res.status(200).json(results);
     } catch (error) {
       console.log(error.message);
       res.status(400).json({ message: error.message });
@@ -111,7 +119,14 @@ const pinCtrl = {
     };
     try {
       const pins = await Pin.paginate(query, options);
-      res.status(200).json(pins);
+      const results = {};
+      results.data = pins.docs;
+      results.pagination = {
+        limit: pins.limit,
+        page: pins.page,
+        total: pins.totalDocs,
+      };
+      res.status(200).json(results);
     } catch (error) {
       console.log(error.message);
       res.status(400).json({ message: error.message });
@@ -120,13 +135,39 @@ const pinCtrl = {
   GET_DETAILS_PIN_GET: async (req, res) => {
     const { pinId } = req.params;
     try {
-      const pin = await Pin.findOne({ _id: pinId }).select('_id title description link file likes createBy');
+      const pin = await Pin.findOne({ _id: pinId }).populate({
+        path: 'createBy',
+        select: '_id displayName avatar follower',
+      });
       res.status(200).json(pin);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
-  GET_PIN_BY_CLASS_GET: async (req, res) => {},
+  GET_PIN_BY_USER_GET: async (req, res) => {
+    const { name, limit, page, user } = req.query;
+    const userId = req.user.id;
+    const query = { hidden: { $nin: [userId] }, createBy: user };
+    const options = {
+      limit: parseInt(limit) || 10,
+      page: parseInt(page) || 1,
+      select: '_id link file classify',
+    };
+    try {
+      const pins = await Pin.paginate(query, options);
+      const results = {};
+      results.data = pins.docs;
+      results.pagination = {
+        limit: pins.limit,
+        page: pins.page,
+        total: pins.totalDocs,
+      };
+      res.status(200).json(results);
+    } catch (error) {
+      console.log(error.message);
+      res.status(400).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = pinCtrl;

@@ -3,9 +3,10 @@ const SubComment = require('../model/SubComment.model');
 const commentCtrl = {
   CREATE_COMMENT_POST: async (req, res) => {
     const { pinId, body } = req.body;
+    console.log(pinId, body);
     const userId = req.user.id;
     try {
-      const newComment = await Comment.create({ pin: pinId, body, createBy: userId, subComment: [] });
+      const newComment = await Comment.create({ pin: pinId, body: body, createBy: userId, subComment: [] });
       res.status(200).json(newComment);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -69,21 +70,16 @@ const commentCtrl = {
     }
   },
   GET_COMMENT_BY_PIN_GET: async (req, res) => {
-    const { limit, page } = req.query;
     const { pinId } = req.params;
     const userId = req.user.id;
     const query = { pin: pinId };
-    const options = {
-      limit: parseInt(limit) || 10,
-      page: parseInt(page) || 1,
-      populate: {
+
+    try {
+      const comments = await Comment.find(query).populate({
         path: 'createBy',
         select: '_id displayName avatar',
         where: { blocked: { $nin: userId }, blocking: { $nin: userId } },
-      },
-    };
-    try {
-      const comments = await Comment.paginate(query, options);
+      });
       res.status(200).json(comments);
     } catch (error) {
       console.log(error.message);

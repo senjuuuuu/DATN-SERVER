@@ -50,4 +50,6 @@ router.post('/refreshToken', authCtrl.REFRESH_TOKEN_POST);
 /** */
 router.post('/changePassword', authMid.verify, authCtrl.CHANGE_PASSWORD_POST);
 router.post('/forgetPassword', authCtrl.FORGET_PASSWORD_POST);
+router.post('/checkForgetPassword', authCtrl.CHECK_FORGET_PASSWORD_POST);
+router.post('/saveForgetPassword', authCtrl.SAVE_FORGET_PASSWORD_POST);
 module.exports = router;

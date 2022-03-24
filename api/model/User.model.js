@@ -31,7 +31,11 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    avatar: { type: String },
+    avatar: {
+      type: String,
+      default: 'https://res.cloudinary.com/senju/image/upload/v1647589602/avatar/no-avatar_qfpfoa.png',
+    },
+    code: { type: String },
     cloudinary_id: { type: String },
     social_id: { type: String },
     isActive: { type: Boolean, default: false },

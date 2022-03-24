@@ -3,6 +3,7 @@ dotenv.config();
 const connectDb = require('./db');
 connectDb();
 const express = require('express');
+const path = require('path');
 const cookieSession = require('cookie-session');
 const morgan = require('morgan');
 const passport = require('passport');
@@ -23,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //session
 app.use(cookieSession({ name: 'session', keys: ['lama'], maxAge: 24 * 60 * 60 * 100 }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 //passport
 app.use(passport.initialize());
 app.use(passport.session());

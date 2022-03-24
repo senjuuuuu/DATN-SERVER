@@ -6,8 +6,9 @@ router.put('/edit', authMid.verify, tableCtrl.EDIT_TABLE_PUT);
 router.delete('/delete', authMid.verify, tableCtrl.DELETE_TABLE_DELETE);
 router.get('/save', authMid.verify, tableCtrl.SAVE_PIN_POST);
 router.get('/unSave', authMid.verify, tableCtrl.UN_SAVE_PIN_POST);
-router.get('/user=:user', authMid.verify, tableCtrl.GET_ALL_TABLE_BY_USER_GET);
+router.get('/', authMid.verify, tableCtrl.GET_ALL_TABLE_BY_USER_GET);
 router.get('/:tableId', authMid.verify, tableCtrl.GET_DETAILS_TABLE_POST);
 router.post('/search', authMid.verify, tableCtrl.FIND_TABLE_POST);
-
+//
+router.get('/id/:tableId', authMid.verify, tableCtrl.FIND_TABLE_BY_ID_GET);
 module.exports = router;
